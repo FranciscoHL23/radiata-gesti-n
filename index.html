@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radiata Forest — Gestión Operativa 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0f1117;
+  --bg2: #161b26;
+  --bg3: #1e2435;
+  --bg4: #252d42;
+  --line: #2a3350;
+  --line2: #3a4a6b;
+  --text: #e2e8f5;
+  --text2: #8896b3;
+  --text3: #4a5a7a;
+  --green: #22c55e;
+  --green-dim: #15803d;
+  --green-bg: #052e16;
+  --amber: #f59e0b;
+  --amber-dim: #b45309;
+  --amber-bg: #1c1007;
+  --red: #ef4444;
+  --red-dim: #b91c1c;
+  --red-bg: #1c0505;
+  --blue: #3b82f6;
+  --blue-dim: #1d4ed8;
+  --blue-bg: #0c1a3a;
+  --teal: #14b8a6;
+  --accent: #4ade80;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-sans: 'IBM Plex Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ── LAYOUT ── */
+.shell { display: flex; height: 100vh; overflow: hidden; }
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+
+/* ── SIDEBAR ── */
+.brand {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.brand-logo {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.brand-sub {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 2px;
+  font-family: var(--font-mono);
+}
+
+.nav-section { padding: 12px 0 4px; }
+.nav-label {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 0 16px;
+  margin-bottom: 4px;
+  font-family: var(--font-mono);
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 16px;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 12px;
+  transition: all 0.12s;
+  border-left: 2px solid transparent;
+}
+.nav-item:hover { background: var(--bg3); color: var(--text); }
+.nav-item.active { background: var(--bg3); color: var(--accent); border-left-color: var(--accent); }
+.nav-icon { width: 14px; text-align: center; font-size: 13px; opacity: 0.7; }
+.nav-item.active .nav-icon { opacity: 1; }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text3);
+}
+.status-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  margin-right: 6px;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ── TOPBAR ── */
+.topbar {
+  height: 52px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  background: var(--bg2);
+  flex-shrink: 0;
+}
+.topbar-title { font-size: 14px; font-weight: 500; flex: 1; }
+.topbar-meta { font-size: 11px; color: var(--text3); font-family: var(--font-mono); }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.12s;
+  font-family: var(--font-sans);
+}
+.btn-primary { background: var(--green-dim); color: #fff; }
+.btn-primary:hover { background: var(--green); }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--line2); }
+.btn-ghost:hover { background: var(--bg3); color: var(--text); }
+.btn-sm { padding: 4px 10px; font-size: 11px; }
+
+/* ── CONTENT ── */
+.content { padding: 24px; flex: 1; }
+
+/* ── VIEWS ── */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── KPI GRID ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.kpi-card {
+  background: var(--bg2);
+  padding: 16px 20px;
+}
+.kpi-label { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; font-family: var(--font-mono); margin-bottom: 6px; }
+.kpi-value { font-size: 28px; font-weight: 300; font-family: var(--font-mono); color: var(--text); line-height: 1; }
+.kpi-sub { font-size: 11px; color: var(--text2); margin-top: 4px; }
+.kpi-delta { font-size: 10px; font-family: var(--font-mono); padding: 2px 6px; border-radius: 2px; }
+.delta-up { background: var(--green-bg); color: var(--green); }
+.delta-warn { background: var(--amber-bg); color: var(--amber); }
+.delta-down { background: var(--red-bg); color: var(--red); }
+
+/* ── SECTION HEADER ── */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text2);
+  font-family: var(--font-mono);
+}
+
+/* ── TABLE ── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.data-table th {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg3);
+  text-align: left;
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text2);
+  font-size: 12px;
+  vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--bg3); }
+.cell-primary { color: var(--text); font-weight: 500; }
+.cell-mono { font-family: var(--font-mono); font-size: 11px; }
+
+/* ── BADGE ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-dim); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-dim); }
+.badge-red   { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-dim); }
+.badge-blue  { background: var(--blue-bg);  color: var(--blue);  border: 1px solid var(--blue-dim); }
+.badge-gray  { background: var(--bg4); color: var(--text3); border: 1px solid var(--line2); }
+
+/* ── PROGRESS BAR ── */
+.prog-wrap { display: flex; align-items: center; gap: 8px; }
+.prog-track {
+  flex: 1;
+  height: 4px;
+  background: var(--bg4);
+  border-radius: 2px;
+  min-width: 80px;
+}
+.prog-fill { height: 4px; border-radius: 2px; transition: width 0.4s; }
+.prog-label { font-family: var(--font-mono); font-size: 10px; color: var(--text2); min-width: 32px; text-align: right; }
+
+/* ── GANTT ── */
+.gantt-wrap { overflow-x: auto; margin-bottom: 24px; }
+.gantt-table { width: 100%; border-collapse: collapse; min-width: 900px; }
+.gantt-table th {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text3);
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+  background: var(--bg3);
+  font-weight: 500;
+}
+.gantt-table td {
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+.gantt-table tr:hover td { background: rgba(255,255,255,0.02); }
+.gantt-label { font-size: 11px; color: var(--text2); white-space: nowrap; min-width: 160px; }
+.gantt-labor { font-size: 10px; color: var(--text3); white-space: nowrap; min-width: 130px; }
+.gantt-cell { height: 28px; position: relative; }
+.gantt-bar {
+  position: absolute;
+  top: 4px; bottom: 4px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  font-size: 9px;
+  font-family: var(--font-mono);
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: default;
+}
+.gantt-bar-done { background: var(--green-dim); color: #fff; }
+.gantt-bar-progress { background: var(--amber-dim); color: #fff; }
+.gantt-bar-plan { background: var(--bg4); color: var(--text3); border: 1px solid var(--line2); }
+.gantt-now { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--red); opacity: 0.6; }
+
+/* ── KANBAN ── */
+.kanban-wrap {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.kanban-col {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.kanban-header {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.kanban-count {
+  background: var(--bg4);
+  color: var(--text3);
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-size: 10px;
+}
+.kanban-cards { padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.kanban-card {
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 10px;
+  cursor: pointer;
+  transition: border-color 0.12s;
+}
+.kanban-card:hover { border-color: var(--line2); }
+.kanban-predio { font-size: 11px; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+.kanban-prop { font-size: 10px; color: var(--text3); margin-bottom: 6px; }
+.kanban-zone {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── CONTRATISTAS ── */
+.contractor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.contractor-card {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 16px;
+}
+.contractor-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.contractor-meta { font-size: 11px; color: var(--text3); margin-bottom: 12px; }
+.contractor-stat { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.contractor-stat-label { font-size: 11px; color: var(--text2); }
+.contractor-stat-val { font-family: var(--font-mono); font-size: 11px; color: var(--text); }
+.contractor-divider { border: none; border-top: 1px solid var(--line); margin: 10px 0; }
+.contractor-labores { font-size: 10px; color: var(--text3); font-family: var(--font-mono); }
+
+/* ── REPORT FORM ── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 11px; color: var(--text3); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; }
+.form-input, .form-select, .form-textarea {
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 8px 12px;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  outline: none;
+  transition: border-color 0.12s;
+  width: 100%;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--line2); }
+.form-select option { background: var(--bg3); }
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-card {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.form-section-title {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* ── ALERTS ── */
+.alert-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.alert-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+.alert-red { background: var(--red-bg); border-color: var(--red-dim); }
+.alert-amber { background: var(--amber-bg); border-color: var(--amber-dim); }
+.alert-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.alert-red .alert-dot { background: var(--red); }
+.alert-amber .alert-dot { background: var(--amber); }
+.alert-text { font-size: 12px; color: var(--text2); flex: 1; }
+.alert-time { font-size: 10px; font-family: var(--font-mono); color: var(--text3); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--bg2);
+  border: 1px solid var(--line2);
+  border-radius: 8px;
+  width: 560px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-title { font-size: 14px; font-weight: 500; }
+.modal-close { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 20px; line-height: 1; padding: 0 4px; }
+.modal-close:hover { color: var(--text); }
+.modal-body { padding: 20px; }
+.modal-footer { padding: 14px 20px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 8px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--bg3);
+  border: 1px solid var(--green-dim);
+  color: var(--green);
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: var(--font-mono);
+  z-index: 200;
+  transform: translateY(60px);
+  opacity: 0;
+  transition: all 0.2s;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── SEARCH ── */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 6px 12px;
+  margin-bottom: 16px;
+}
+.search-bar input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  width: 100%;
+}
+.search-bar input::placeholder { color: var(--text3); }
+.search-icon { color: var(--text3); font-size: 14px; }
+
+/* ── TABS ── */
+.tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 1px solid var(--line); }
+.tab {
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--text3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.12s;
+}
+.tab:hover { color: var(--text2); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── DETAIL ROW ── */
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.detail-key { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; font-family: var(--font-mono); margin-bottom: 2px; }
+.detail-val { font-size: 13px; color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">◆ Radiata Forest</div>
+      <div class="brand-sub">GESTIÓN OPERATIVA 2026</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Principal</div>
+      <div class="nav-item active" onclick="navigate('dashboard')">
+        <span class="nav-icon">▦</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="navigate('proyectos')">
+        <span class="nav-icon">◈</span> Proyectos
+      </div>
+      <div class="nav-item" onclick="navigate('operativo')">
+        <span class="nav-icon">≡</span> Prog. Operativo
+      </div>
+      <div class="nav-item" onclick="navigate('gantt')">
+        <span class="nav-icon">▬</span> Carta Gantt
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Gestión</div>
+      <div class="nav-item" onclick="navigate('contratistas')">
+        <span class="nav-icon">◉</span> Contratistas
+      </div>
+      <div class="nav-item" onclick="navigate('comercial')">
+        <span class="nav-icon">◇</span> Pipeline Comercial
+      </div>
+      <div class="nav-item" onclick="navigate('avance')">
+        <span class="nav-icon">↑</span> Reportar Avance
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <span class="status-dot"></span>SISTEMA ACTIVO<br>
+      <span style="display:block;margin-top:4px;">Jun 2026 — T2</span>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard General</div>
+      <div class="topbar-meta" id="topbar-meta">Temporada 2026 · 31 predios activos</div>
+      <button class="btn btn-ghost btn-sm" onclick="openModal('modal-reporte')">+ Registrar avance</button>
+      <button class="btn btn-primary btn-sm" onclick="openModal('modal-predio')">+ Nuevo predio</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ══════════════════════════════════════════════════════ -->
+      <!-- VIEW: DASHBOARD -->
+      <!-- ══════════════════════════════════════════════════════ -->
+      <div class="view active" id="view-dashboard">
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Ha contratadas</div>
+            <div class="kpi-value">1.726</div>
+            <div class="kpi-sub">31 predios · <span class="kpi-delta delta-up">+12% vs meta</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Avance temporada</div>
+            <div class="kpi-value">38<span style="font-size:16px">%</span></div>
+            <div class="kpi-sub">659 ha ejecutadas <span class="kpi-delta delta-warn">en plazo</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Plantas proyectadas</div>
+            <div class="kpi-value">1.69M</div>
+            <div class="kpi-sub">659k plantadas <span class="kpi-delta delta-up">on track</span></div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Predios con atraso</div>
+            <div class="kpi-value" style="color:var(--amber)">4</div>
+            <div class="kpi-sub">Requieren atención <span class="kpi-delta delta-warn">urgente</span></div>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <div class="section-title">Alertas activas</div>
+          <span class="badge badge-red">4 activas</span>
+        </div>
+        <div class="alert-list">
+          <div class="alert-item alert-red">
+            <div class="alert-dot"></div>
+            <div class="alert-text"><strong>Miramar</strong> — Solo 3% de avance en habilitación de suelo. Plazo de plantación: Agosto.</div>
+            <div class="alert-time">hace 2d</div>
+          </div>
+          <div class="alert-item alert-red">
+            <div class="alert-dot"></div>
+            <div class="alert-text"><strong>Huerta de Maule</strong> — Subsolado en 48 ha sin contratista asignado. Superficie total: 174 ha.</div>
+            <div class="alert-time">hace 3d</div>
+          </div>
+          <div class="alert-item alert-amber">
+            <div class="alert-dot"></div>
+            <div class="alert-text"><strong>El Calabozo</strong> — Avance 85.7%. Falta confirmar fertilización con Basacote post-plantación.</div>
+            <div class="alert-time">hoy</div>
+          </div>
+          <div class="alert-item alert-amber">
+            <div class="alert-dot"></div>
+            <div class="alert-text"><strong>Cherquenco PC 19</strong> — 50% de avance en habilitación. Superficie pequeña (3 ha) pero sin fecha de término confirmada.</div>
+            <div class="alert-time">hace 1d</div>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <div class="section-title">Avance por zona</div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Zona</th>
+              <th>Predios</th>
+              <th>Ha totales</th>
+              <th>Ha ejecutadas</th>
+              <th>Progreso</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cell-primary">Norte</td>
+              <td class="cell-mono">7</td>
+              <td class="cell-mono">469.7 ha</td>
+              <td class="cell-mono">349 ha</td>
+              <td>
+                <div class="prog-wrap">
+                  <div class="prog-track"><div class="prog-fill" style="width:74%;background:var(--green)"></div></div>
+                  <span class="prog-label">74%</span>
+                </div>
+              </td>
+              <td><span class="badge badge-green">Al día</span></td>
+            </tr>
+            <tr>
+              <td class="cell-primary">Centro</td>
+              <td class="cell-mono">7</td>
+              <td class="cell-mono">438 ha</td>
+              <td class="cell-mono">155 ha</td>
+              <td>
+                <div class="prog-wrap">
+                  <div class="prog-track"><div class="prog-fill" style="width:35%;background:var(--amber)"></div></div>
+                  <span class="prog-label">35%</span>
+                </div>
+              </td>
+              <td><span class="badge badge-amber">En curso</span></td>
+            </tr>
+            <tr>
+              <td class="cell-primary">Sur</td>
+              <td class="cell-mono">17</td>
+              <td class="cell-mono">818.5 ha</td>
+              <td class="cell-mono">155 ha</td>
+              <td>
+                <div class="prog-wrap">
+                  <div class="prog-track"><div class="prog-fill" style="width:19%;background:var(--red)"></div></div>
+                  <span class="prog-label">19%</span>
+                </div>
+              </td>
+              <td><span class="badge badge-red">Atrasado</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-head">
+          <div class="section-title">Predios críticos — requieren acción</div>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Predio</th>
+              <th>Propietario</th>
+              <th>Zona</th>
+              <th>Ha</th>
+              <th>Labor pendiente</th>
+              <th>% Avance</th>
+              <th>Contratista</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="cell-primary">Miramar</td>
+              <td>Héctor Rodríguez</td>
+              <td><span style="color:var(--teal);font-size:10px;font-family:var(--font-mono);">SUR</span></td>
+              <td class="cell-mono">63 ha</td>
+              <td>Habilitación suelo</td>
+              <td>
+                <div class="prog-wrap">
+                  <div class="prog-track"><div class="prog-fill" style="width:3%;background:var(--red)"></div></div>
+                  <span class="prog-label" style="color:var(--red)">3%</span>
+                </div>
+              </td>
+              <td><span class="badge badge-red">Sin asignar</span></td>
+              <td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-reporte')">Actualizar</button></td>
+            </tr>
+            <tr>
+              <td class="cell-primary">Huerta de Maule</td>
+              <td>For. Truquilemu</td>
+              <td><span style="color:var(--teal);font-size:10px;font-family:var(--font-mono);">NORTE</span></td>
+              <td class="cell-mono">174 ha</td>
+              <td>Subsolado + Plantación</td>
+              <td>
+                <div class="prog-wrap">
+                  <div class="prog-track"><div class="prog-fill" style="width:65%;background:var(--amber)"></div></div>
+                  <span class="prog-label">65%</span>
+                </div>
+              </td>
+              <td><span class="badge badge-amber">Parcial</span></td>
+              <td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-reporte')">Actualizar</button></td>
+            </tr>
+            <tr>
+              <td class="cell-primary">El Calabozo</td>
+              <td>Alfredo Brenet</td>
+              <td><span style="color:var(--teal);font-size:10px;font-family:var(--font-mono);">SUR</span></td>
+              <td class="cell-mono">35 ha</td>
+              <td>Fertilización Basacote</td>
+              <td>
+                <div class="prog-wrap">
+                  <div class="prog-track"><div class="prog-fill" style="width:86%;background:var(--amber)"></div></div>
+                  <span class="prog-label">86%</span>
+                </div>
+              </td>
+              <td><span class="badge badge-amber">FAO</span></td>
+              <td><button class="btn btn-ghost btn-sm" onclick="openModal('modal-reporte')">Actualizar</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════ -->
+      <!-- VIEW: PROYECTOS -->
+      <!-- ══════════════════════════════════════════════════════ -->
+      <div class="view" id="view-proyectos">
+        <div class="tabs">
+          <div class="tab active" onclick="setTab(this,'tab-todos')">Todos (31)</div>
+          <div class="tab" onclick="setTab(this,'tab-norte')">Norte (7)</div>
+          <div class="tab" onclick="setTab(this,'tab-centro')">Centro (7)</div>
+          <div class="tab" onclick="setTab(this,'tab-sur')">Sur (17)</div>
+        </div>
+
+        <div class="search-bar">
+          <span class="search-icon">⌕</span>
+          <input type="text" placeholder="Buscar predio, propietario o cliente..." oninput="filterTable(this.value)">
+        </div>
+
+        <table class="data-table" id="tabla-proyectos">
+          <thead>
+            <tr>
+              <th>Predio</th>
+              <th>Propietario</th>
+              <th>Cliente</th>
+              <th>Resp. Comercial</th>
+              <th>Zona</th>
+              <th>Región</th>
+              <th>Especie</th>
+              <th>Ha contrato</th>
+              <th>Ha trabajo</th>
+              <th>Plantas proy.</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="proyectos-body">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════ -->
+      <!-- VIEW: PROG. OPERATIVO -->
+      <!-- ══════════════════════════════════════════════════════ -->
+      <div class="view" id="view-operativo">
+        <div class="section-head">
+          <div class="section-title">Labores por predio — estado de ejecución</div>
+          <span class="badge badge-gray">Al 08.05.2026</span>
+        </div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Predio</th>
+              <th>Zona</th>
+              <th>Ha</th>
+              <th>Roce</th>
+              <th>Subsolado</th>
+              <th>Cultivo Exc.</th>
+              <th>Plantación</th>
+              <th>Fertiliz.</th>
+              <th>Ctrl Malezas</th>
+              <th>% Habilitación</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="operativo-body">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════ -->
+      <!-- VIEW: GANTT -->
+      <!-- ══════════════════════════════════════════════════════ -->
+      <div class="view" id="view-gantt">
+        <div class="section-head">
+          <div class="section-title">Carta Gantt de labores 2026</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="badge badge-green" style="gap:4px;">■ Realizado</span>
+            <span class="badge badge-amber" style="gap:4px;">■ En ejecución</span>
+            <span class="badge badge-gray" style="gap:4px;">■ Planificado</span>
+            <span style="font-size:10px;color:var(--red);font-family:var(--font-mono);">│ Hoy</span>
+          </div>
+        </div>
+        <div class="gantt-wrap">
+          <table class="gantt-table" id="gantt-table"></table>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════ -->
+      <!-- VIEW: CONTRATISTAS -->
+      <!-- ══════════════════════════════════════════════════════ -->
+      <div class="view" id="view-contratistas">
+        <div class="section-head">
+          <div class="section-title">EMSEFOR / Contratistas asignados</div>
+          <button class="btn btn-ghost btn-sm" onclick="openModal('modal-contratista')">+ Nuevo contratista</button>
+        </div>
+        <div class="contractor-grid" id="contractor-grid"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════ -->
+      <!-- VIEW: COMERCIAL -->
+      <!-- ══════════════════════════════════════════════════════ -->
+      <div class="view" id="view-comercial">
+        <div class="section-head">
+          <div class="section-title">Pipeline comercial — etapas del proyecto</div>
+        </div>
+        <div class="kanban-wrap" id="kanban-wrap"></div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════════ -->
+      <!-- VIEW: AVANCE -->
+      <!-- ══════════════════════════════════════════════════════ -->
+      <div class="view" id="view-avance">
+        <div class="form-card">
+          <div class="form-section-title">Registrar avance de labores</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Predio</label>
+              <select class="form-select" id="rep-predio">
+                <option value="">Seleccionar predio...</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Labor ejecutada</label>
+              <select class="form-select" id="rep-labor">
+                <option>Roce</option>
+                <option>Subsolado con Buldozer</option>
+                <option>Subsolado con Excavadora</option>
+                <option>Faja con Excavadora</option>
+                <option>Cultivo Manual Hoyadora</option>
+                <option>Control Malezas PrePlantación</option>
+                <option>Plantación</option>
+                <option>Replante</option>
+                <option>Fertilización con Basacote</option>
+                <option>Control Malezas PostPlantación</option>
+                <option>Fertilización con Boro</option>
+                <option>Construcción de Cercos</option>
+                <option>Cortafuegos</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ha ejecutadas esta semana</label>
+              <input class="form-input" type="number" id="rep-ha" placeholder="Ej: 12.5">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contratista / EMSEFOR</label>
+              <select class="form-select" id="rep-contratista">
+                <option>Patricio Riffo</option>
+                <option>Juan Muñoz Operaciones</option>
+                <option>Sergio Vega Maquinaria</option>
+                <option>Pedro Cisternas</option>
+                <option>Ana Torres Plantaciones</option>
+                <option>Sin asignar</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Fecha de ejecución</label>
+              <input class="form-input" type="date" id="rep-fecha">
+            </div>
+            <div class="form-group">
+              <label class="form-label">% Avance acumulado</label>
+              <input class="form-input" type="number" id="rep-pct" placeholder="0–100" min="0" max="100">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Observaciones</label>
+              <textarea class="form-textarea" id="rep-obs" placeholder="Condiciones del terreno, incidentes, material requerido..."></textarea>
+            </div>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:8px;">
+            <button class="btn btn-primary" onclick="submitAvance()">Registrar avance</button>
+            <button class="btn btn-ghost" onclick="clearForm()">Limpiar</button>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <div class="section-title">Últimos registros</div>
+        </div>
+        <table class="data-table" id="historial-table">
+          <thead>
+            <tr><th>Fecha</th><th>Predio</th><th>Labor</th><th>Ha</th><th>% Avanc</th><th>Contratista</th><th>Notas</th></tr>
+          </thead>
+          <tbody id="historial-body">
+            <tr>
+              <td class="cell-mono">02/06/2026</td>
+              <td class="cell-primary">Las Pitras</td>
+              <td>Control Malezas PrePlant.</td>
+              <td class="cell-mono">50 ha</td>
+              <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:77%;background:var(--green)"></div></div><span class="prog-label">77%</span></div></td>
+              <td>Patricio Riffo</td>
+              <td style="color:var(--text3);font-size:11px;">Sin incidentes</td>
+            </tr>
+            <tr>
+              <td class="cell-mono">01/06/2026</td>
+              <td class="cell-primary">El Bosque</td>
+              <td>Cultivo Excavadora</td>
+              <td class="cell-mono">39.8 ha</td>
+              <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:100%;background:var(--green)"></div></div><span class="prog-label">100%</span></div></td>
+              <td>Pedro Cisternas</td>
+              <td style="color:var(--text3);font-size:11px;">Completado</td>
+            </tr>
+            <tr>
+              <td class="cell-mono">30/05/2026</td>
+              <td class="cell-primary">Codeillima</td>
+              <td>Cultivo Manual Hoyadora</td>
+              <td class="cell-mono">28.7 ha</td>
+              <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:100%;background:var(--green)"></div></div><span class="prog-label">100%</span></div></td>
+              <td>Ana Torres Plant.</td>
+              <td style="color:var(--text3);font-size:11px;">Terreno en buenas cond.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODALES -->
+<!-- ══════════════════════════════════════════════════════ -->
+
+<!-- Modal: Registrar avance rápido -->
+<div class="modal-overlay" id="modal-reporte">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Registrar avance rápido</div>
+      <button class="modal-close" onclick="closeModal('modal-reporte')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Predio</label>
+          <select class="form-select"><option>Las Pitras</option><option>Huerta de Maule</option><option>El Pretil</option><option>Miramar</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Labor</label>
+          <select class="form-select"><option>Plantación</option><option>Subsolado</option><option>Roce</option><option>Fertilización</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ha ejecutadas</label>
+          <input class="form-input" type="number" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">% Avance total</label>
+          <input class="form-input" type="number" placeholder="0–100">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Observación</label>
+          <textarea class="form-textarea" placeholder="Observaciones del terreno..." style="min-height:60px"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-reporte')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveModal('modal-reporte')">Guardar registro</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nuevo predio -->
+<div class="modal-overlay" id="modal-predio">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Ingresar nuevo predio</div>
+      <button class="modal-close" onclick="closeModal('modal-predio')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Nombre del predio</label><input class="form-input" placeholder="Ej: San Martín"></div>
+        <div class="form-group"><label class="form-label">Propietario</label><input class="form-input" placeholder="Nombre o razón social"></div>
+        <div class="form-group"><label class="form-label">Cliente facturación</label><input class="form-input" placeholder="Cliente"></div>
+        <div class="form-group">
+          <label class="form-label">Responsable comercial</label>
+          <select class="form-select"><option>Rodrigo Guzmán</option><option>Marcelo Vives</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Zona</label>
+          <select class="form-select"><option>Norte</option><option>Centro</option><option>Sur</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Región</label>
+          <select class="form-select"><option>Séptima</option><option>Octava</option><option>Novena</option><option>Decimosexta</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Ha contrato</label><input class="form-input" type="number" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">Ha trabajo</label><input class="form-input" type="number" placeholder="0"></div>
+        <div class="form-group">
+          <label class="form-label">Especie</label>
+          <select class="form-select"><option>Pr (Pino radiata)</option><option>En (Eucalyptus)</option><option>Nativo (Esclerófilo)</option><option>Nativo (Ro-Ra-Co)</option><option>Pino Ponderosa</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Plantas unitarias (por ha)</label><input class="form-input" type="number" placeholder="1000"></div>
+        <div class="form-group">
+          <label class="form-label">Actividad</label>
+          <select class="form-select"><option>Plantación</option><option>Replante</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado comercial</label>
+          <select class="form-select"><option>Dato</option><option>Presupuesto Enviado</option><option>Cotización Aceptada</option><option>Contrato Firmado</option><option>Anticipo Pagado</option><option>En Ejecución</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-predio')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveModal('modal-predio')">Crear predio</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nuevo contratista -->
+<div class="modal-overlay" id="modal-contratista">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Registrar nuevo contratista</div>
+      <button class="modal-close" onclick="closeModal('modal-contratista')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">Nombre / Empresa</label><input class="form-input" placeholder="Nombre del EMSEFOR"></div>
+        <div class="form-group"><label class="form-label">RUT</label><input class="form-input" placeholder="12.345.678-9"></div>
+        <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" placeholder="+56 9 ..."></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="correo@empresa.cl"></div>
+        <div class="form-group">
+          <label class="form-label">Especialidad</label>
+          <select class="form-select"><option>Plantación</option><option>Maquinaria pesada</option><option>Control de malezas</option><option>Fertilización</option><option>Multiservicio</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Zona de operación</label>
+          <select class="form-select"><option>Norte</option><option>Centro</option><option>Sur</option><option>Norte y Centro</option><option>Todo Chile</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-contratista')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveModal('modal-contratista')">Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// DATA — tomada del Excel real
+// ══════════════════════════════════════════════════════════════
+const proyectos = [
+  {predio:'Las Pitras',propietario:'For. Truquilemu',cliente:'For. Truquilemu',resp:'Rodrigo Guzmán',zona:'Norte',region:'Decimosexta',especie:'Pr',haContrato:65,haTrabajo:65,plantasUnit:1000,status:'OK'},
+  {predio:'Huerta de Maule',propietario:'For. Truquilemu',cliente:'For. Truquilemu',resp:'Rodrigo Guzmán',zona:'Norte',region:'Séptima',especie:'Pr',haContrato:174,haTrabajo:174,plantasUnit:1000,status:''},
+  {predio:'El Pretil',propietario:'Jorge Plaza de los Reyes',cliente:'Jorge Plaza de los Reyes',resp:'Rodrigo Guzmán',zona:'Centro',region:'Octava',especie:'Pr',haContrato:300,haTrabajo:300,plantasUnit:1100,status:''},
+  {predio:'Los Corrales',propietario:'Inv. Los Corrales',cliente:'Inv. Los Corrales',resp:'Marcelo Vives',zona:'Centro',region:'Octava',especie:'En',haContrato:40,haTrabajo:30,plantasUnit:1333,status:''},
+  {predio:'San José y el Trigal',propietario:'José Antonio Señor',cliente:'José Antonio Señor',resp:'Rodrigo Guzmán',zona:'Centro',region:'Octava',especie:'Pr',haContrato:45,haTrabajo:45,plantasUnit:1250,status:''},
+  {predio:'San Luis',propietario:'Sergio Menichetti',cliente:'Forestal FHO',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'Pr',haContrato:50,haTrabajo:50,plantasUnit:1100,status:''},
+  {predio:'San Carlos',propietario:'Leonardo García',cliente:'Leonardo García',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:160,haTrabajo:160,plantasUnit:1250,status:''},
+  {predio:'Galicia',propietario:'Leonardo García',cliente:'Leonardo García',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:142,haTrabajo:142,plantasUnit:1250,status:''},
+  {predio:'San Jose',propietario:'Leonardo García',cliente:'Leonardo García',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:50,haTrabajo:50,plantasUnit:1250,status:''},
+  {predio:'El Mirador',propietario:'Leonardo García',cliente:'Leonardo García',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:50,haTrabajo:50,plantasUnit:1250,status:''},
+  {predio:'Miramar',propietario:'Héctor Rodríguez',cliente:'Héctor Rodríguez',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:75,haTrabajo:63,plantasUnit:1333,status:''},
+  {predio:'El Robledal',propietario:'Héctor Rodríguez',cliente:'Forestal FHO',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:0,haTrabajo:5,plantasUnit:1333,status:''},
+  {predio:'Santa Gemita',propietario:'Héctor Rodríguez',cliente:'Forestal FHO',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:13,haTrabajo:14,plantasUnit:1333,status:''},
+  {predio:'Los Notros',propietario:'Jorge Manríquez',cliente:'Andes Forest',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:15,haTrabajo:14,plantasUnit:1333,status:''},
+  {predio:'La Teja',propietario:'Jorge Manríquez',cliente:'Andes Forest',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:0,haTrabajo:6,plantasUnit:0,status:''},
+  {predio:'Quintrilpe Bajo',propietario:'Héctor Rodríguez',cliente:'Forestal FHO',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:6,haTrabajo:6,plantasUnit:1333,status:''},
+  {predio:'El Bosque',propietario:'Andrés Molina',cliente:'Andrés Molina',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:0,haTrabajo:44,plantasUnit:1250,status:'OK'},
+  {predio:'El Calabozo',propietario:'Alfredo Brenet',cliente:'Forestal FAO',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:0,haTrabajo:35,plantasUnit:1250,status:'OK'},
+  {predio:'Porvenir',propietario:'STC',cliente:'STC',resp:'Marcelo Vives',zona:'Norte',region:'Decimosexta',especie:'Nativo Escl.',haContrato:5,haTrabajo:5,plantasUnit:3080,status:'OK'},
+  {predio:'Codeillima',propietario:'ERA',cliente:'ERA',resp:'Marcelo Vives',zona:'Norte',region:'Séptima',especie:'Pr',haContrato:55,haTrabajo:55.7,plantasUnit:1111,status:'OK'},
+  {predio:'Los Corralitos',propietario:'STC',cliente:'STC',resp:'Marcelo Vives',zona:'Centro',region:'Octava',especie:'Pino Ponderosa',haContrato:18,haTrabajo:18,plantasUnit:1666,status:''},
+  {predio:'Santa Elena',propietario:'STC',cliente:'STC',resp:'Marcelo Vives',zona:'Sur',region:'Novena',especie:'Nativo Ro-Ra-Co',haContrato:7,haTrabajo:7,plantasUnit:3000,status:''},
+  {predio:'Santa Rosa',propietario:'René Díaz',cliente:'René Díaz',resp:'Marcelo Vives',zona:'Centro',region:'Octava',especie:'Egloni',haContrato:0,haTrabajo:5,plantasUnit:0,status:'OK'},
+  {predio:'Varios',propietario:'Comsa',cliente:'Comsa',resp:'Marcelo Vives',zona:'Sur',region:'Novena',especie:'En',haContrato:0,haTrabajo:200,plantasUnit:0,status:''},
+  {predio:'Quillayes EG',propietario:'For. Truquilemu',cliente:'For. Truquilemu',resp:'Rodrigo Guzmán',zona:'Norte',region:'Séptima',especie:'Pr',haContrato:70,haTrabajo:70,plantasUnit:1000,status:''},
+  {predio:'El Guairao',propietario:'For. Truquilemu',cliente:'For. Truquilemu',resp:'Rodrigo Guzmán',zona:'Norte',region:'Séptima',especie:'Pr',haContrato:25,haTrabajo:25,plantasUnit:1000,status:''},
+  {predio:'Nueva Escocia',propietario:'Andrés Molina',cliente:'Andrés Molina',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'Pr',haContrato:70,haTrabajo:70,plantasUnit:1100,status:''},
+  {predio:'Monteverde',propietario:'Anka',cliente:'Anka',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:12,haTrabajo:12,plantasUnit:1250,status:''},
+  {predio:'Cherquenco PC 19',propietario:'Alfredo Brenet',cliente:'Alfredo Brenet',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:5,haTrabajo:3,plantasUnit:1333,status:''},
+  {predio:'Santa Sabina',propietario:'Alfredo Brenet',cliente:'Alfredo Brenet',resp:'Rodrigo Guzmán',zona:'Sur',region:'Novena',especie:'En',haContrato:2,haTrabajo:1.5,plantasUnit:1333,status:''},
+  {predio:'San Luis Norte',propietario:'Héctor Rodríguez',cliente:'Forestal FHO',resp:'Rodrigo Guzmán',zona:'Norte',region:'Séptima',especie:'Pr',haContrato:30,haTrabajo:30,plantasUnit:1100,status:''},
+];
+
+const operativoData = [
+  {predio:'Las Pitras',zona:'Norte',ha:65,roce:null,subsolado:null,cultivo:null,plantacion:65,fertiliz:65,malezas:65,pct:1.0},
+  {predio:'Huerta de Maule',zona:'Norte',ha:174,roce:5,subsolado:48,cultivo:65,plantacion:null,fertiliz:null,malezas:null,pct:0.65},
+  {predio:'El Pretil',zona:'Centro',ha:300,roce:null,subsolado:null,cultivo:null,plantacion:null,fertiliz:null,malezas:null,pct:null},
+  {predio:'Los Corrales',zona:'Centro',ha:30,roce:1,subsolado:null,cultivo:22,plantacion:null,fertiliz:null,malezas:null,pct:0.73},
+  {predio:'San José y el Trigal',zona:'Centro',ha:45,roce:null,subsolado:null,cultivo:null,plantacion:null,fertiliz:null,malezas:null,pct:null},
+  {predio:'Miramar',zona:'Sur',ha:63,roce:null,subsolado:null,cultivo:null,plantacion:null,fertiliz:null,malezas:null,pct:0.03},
+  {predio:'El Bosque',zona:'Sur',ha:44,roce:4.2,subsolado:null,cultivo:39.8,plantacion:null,fertiliz:null,malezas:null,pct:1.0},
+  {predio:'El Calabozo',zona:'Sur',ha:35,roce:null,subsolado:null,cultivo:30,plantacion:null,fertiliz:null,malezas:null,pct:0.86},
+  {predio:'Codeillima',zona:'Norte',ha:55.7,roce:null,subsolado:null,cultivo:28.7,plantacion:null,fertiliz:null,malezas:null,pct:1.0},
+  {predio:'Los Notros',zona:'Sur',ha:14,roce:7,subsolado:null,cultivo:7,plantacion:null,fertiliz:null,malezas:null,pct:0.80},
+  {predio:'Cherquenco PC19',zona:'Sur',ha:3,roce:1.5,subsolado:null,cultivo:1.5,plantacion:null,fertiliz:null,malezas:null,pct:0.50},
+];
+
+const contratistas = [
+  {nombre:'Patricio Riffo',especialidad:'Control de malezas / Plantación',zona:'Norte – Centro',predios:['Las Pitras','Quillayes EG'],haActivas:135,rendimiento:92},
+  {nombre:'Juan Muñoz Operaciones',especialidad:'Maquinaria — Subsolado / Roce',zona:'Centro – Sur',predios:['Huerta de Maule','El Pretil'],haActivas:348,rendimiento:78},
+  {nombre:'Sergio Vega Maquinaria',especialidad:'Excavadora — Faja / Cultivo',zona:'Sur',predios:['El Bosque','El Calabozo','Los Notros'],haActivas:93,rendimiento:88},
+  {nombre:'Pedro Cisternas',especialidad:'Multiservicio forestal',zona:'Sur',predios:['Galicia','San Carlos','San Jose'],haActivas:352,rendimiento:65},
+  {nombre:'Ana Torres Plantaciones',especialidad:'Plantación manual',zona:'Norte',especie:'Pr / Nativo',predios:['Codeillima','Porvenir'],haActivas:60.7,rendimiento:95},
+  {nombre:'Sin asignar',especialidad:'—',zona:'—',predios:['Miramar','San Luis','El Mirador'],haActivas:163,rendimiento:null},
+];
+
+const etapas = {
+  'Dato':         ['El Pretil','San José y el Trigal','San Luis','San Carlos','Galicia','San Jose','El Mirador','La Teja','Santa Elena','Varios','Quillayes EG'],
+  'Cotización':   ['Miramar','Los Notros','Cherquenco PC19','Santa Sabina','Monteverde','Quintrilpe Bajo'],
+  'Contrato':     ['Los Corrales','Los Corralitos','Nueva Escocia','El Guairao'],
+  'En Ejecución': ['Huerta de Maule','El Bosque','El Calabozo','Codeillima','Las Pitras'],
+  'Cerrado':      ['El Robledal','Santa Gemita','Porvenir','Santa Rosa'],
+};
+
+const etapaColors = {
+  'Dato':'var(--text3)','Cotización':'var(--blue)','Contrato':'var(--amber)','En Ejecución':'var(--green)','Cerrado':'var(--teal)'
+};
+
+const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const hoyMes = 5; // Junio = índice 5
+
+const ganttData = [
+  {predio:'Las Pitras',labor:'Control Malezas',inicio:3,fin:3,real:3,done:true},
+  {predio:'Las Pitras',labor:'Plantación',inicio:4,fin:5,real:5,done:false,pct:0.5},
+  {predio:'Huerta de Maule',labor:'Subsolado',inicio:1,fin:2,real:2,done:true},
+  {predio:'Huerta de Maule',labor:'Plantación',inicio:5,fin:6,real:5,done:false,pct:0.65},
+  {predio:'El Pretil',labor:'Habilitación suelo',inicio:8,fin:9,real:null,done:false,pct:0},
+  {predio:'Los Corrales',labor:'Roce + Cultivo',inicio:1,fin:4,real:4,done:true},
+  {predio:'Miramar',labor:'Habilitación suelo',inicio:4,fin:6,real:5,done:false,pct:0.03},
+  {predio:'El Bosque',labor:'Cultivo Excavadora',inicio:1,fin:5,real:5,done:true},
+  {predio:'El Calabozo',labor:'Cultivo + Plantación',inicio:4,fin:6,real:5,done:false,pct:0.86},
+  {predio:'Codeillima',labor:'Cultivo Manual',inicio:4,fin:6,real:5,done:true},
+  {predio:'Galicia',labor:'Plantación',inicio:7,fin:9,real:null,done:false,pct:0},
+  {predio:'San Carlos',labor:'Plantación',inicio:7,fin:10,real:null,done:false,pct:0},
+];
+
+// ══════════════════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ══════════════════════════════════════════════════════════════
+function renderProyectos(data) {
+  const body = document.getElementById('proyectos-body');
+  body.innerHTML = data.map(p => {
+    const plantas = p.haTrabajo * p.plantasUnit;
+    const statusBadge = p.status === 'OK'
+      ? '<span class="badge badge-green">OK</span>'
+      : '<span class="badge badge-gray">Pendiente</span>';
+    return `<tr>
+      <td class="cell-primary">${p.predio}</td>
+      <td>${p.propietario}</td>
+      <td style="color:var(--text3)">${p.cliente}</td>
+      <td style="color:var(--text3);font-size:11px">${p.resp}</td>
+      <td><span style="color:var(--teal);font-size:10px;font-family:var(--font-mono)">${p.zona.toUpperCase()}</span></td>
+      <td style="color:var(--text3);font-size:11px">${p.region}</td>
+      <td><span class="badge badge-gray">${p.especie}</span></td>
+      <td class="cell-mono">${p.haContrato || '—'}</td>
+      <td class="cell-mono">${p.haTrabajo}</td>
+      <td class="cell-mono">${plantas > 0 ? plantas.toLocaleString('es-CL') : '—'}</td>
+      <td>${statusBadge}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderOperativo() {
+  const body = document.getElementById('operativo-body');
+  body.innerHTML = operativoData.map(r => {
+    const pct = r.pct !== null ? Math.round(r.pct * 100) : null;
+    const pctColor = pct === null ? 'var(--text3)' : pct >= 80 ? 'var(--green)' : pct >= 40 ? 'var(--amber)' : 'var(--red)';
+    const cell = v => v !== null ? `<span class="cell-mono">${v} ha</span>` : `<span style="color:var(--text3)">—</span>`;
+    const statusBadge = pct === null ? '<span class="badge badge-gray">Sin inicio</span>'
+      : pct >= 100 ? '<span class="badge badge-green">Completo</span>'
+      : pct >= 50  ? '<span class="badge badge-amber">En curso</span>'
+      : '<span class="badge badge-red">Atrasado</span>';
+    return `<tr>
+      <td class="cell-primary">${r.predio}</td>
+      <td><span style="color:var(--teal);font-size:10px;font-family:var(--font-mono)">${r.zona.toUpperCase()}</span></td>
+      <td class="cell-mono">${r.ha} ha</td>
+      ${cell(r.roce)}${cell(r.subsolado)}${cell(r.cultivo)}${cell(r.plantacion)}${cell(r.fertiliz)}${cell(r.malezas)}
+      <td>${pct !== null ? `<div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${pctColor}"></div></div><span class="prog-label" style="color:${pctColor}">${pct}%</span></div>` : '<span style="color:var(--text3)">—</span>'}</td>
+      <td>${statusBadge}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderGantt() {
+  const table = document.getElementById('gantt-table');
+  const colW = 52;
+  let html = '<thead><tr><th style="min-width:150px;text-align:left">Predio</th><th style="min-width:120px;text-align:left">Labor</th>';
+  meses.forEach((m,i) => {
+    const isHoy = i === hoyMes;
+    html += `<th style="width:${colW}px;${isHoy?'color:var(--red)':''}">${m}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  ganttData.forEach(row => {
+    html += `<tr><td class="gantt-label">${row.predio}</td><td class="gantt-labor">${row.labor}</td>`;
+    for (let m = 0; m < 12; m++) {
+      const inRange = m >= row.inicio && m <= row.fin;
+      let barHtml = '';
+      if (inRange) {
+        const isStart = m === row.inicio;
+        const isEnd = m === row.fin;
+        const span = row.fin - row.inicio + 1;
+        if (isStart) {
+          const width = span * colW - 4;
+          let cls = 'gantt-bar ';
+          let label = '';
+          if (row.done) { cls += 'gantt-bar-done'; label = '✓'; }
+          else if (row.pct > 0) { cls += 'gantt-bar-progress'; label = `${Math.round(row.pct*100)}%`; }
+          else { cls += 'gantt-bar-plan'; label = 'Plan'; }
+          barHtml = `<td class="gantt-cell" style="position:relative">
+            <div class="${cls}" style="left:2px;width:${width}px;z-index:1">${label}</div>
+            ${m===hoyMes?'<div class="gantt-now" style="left:26px;z-index:2"></div>':''}
+          </td>`;
+        } else { continue; }
+      } else {
+        barHtml = `<td class="gantt-cell" style="position:relative">${m===hoyMes?'<div class="gantt-now" style="left:26px"></div>':''}</td>`;
+      }
+      html += barHtml;
+    }
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  table.innerHTML = html;
+}
+
+function renderContratistas() {
+  const grid = document.getElementById('contractor-grid');
+  grid.innerHTML = contratistas.map(c => {
+    const rendBar = c.rendimiento
+      ? `<div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:${c.rendimiento}%;background:${c.rendimiento>=80?'var(--green)':c.rendimiento>=60?'var(--amber)':'var(--red)'}"></div></div><span class="prog-label">${c.rendimiento}%</span></div>`
+      : '<span style="color:var(--red);font-size:11px;font-family:var(--font-mono)">Sin asignar</span>';
+    return `<div class="contractor-card">
+      <div class="contractor-name">${c.nombre}</div>
+      <div class="contractor-meta">${c.especialidad}</div>
+      <div class="contractor-stat"><span class="contractor-stat-label">Zona</span><span class="contractor-stat-val">${c.zona}</span></div>
+      <div class="contractor-stat"><span class="contractor-stat-label">Ha activas</span><span class="contractor-stat-val">${c.haActivas} ha</span></div>
+      <div class="contractor-stat"><span class="contractor-stat-label">Predios</span><span class="contractor-stat-val">${c.predios.length}</span></div>
+      <hr class="contractor-divider">
+      <div style="font-size:10px;color:var(--text3);margin-bottom:6px;font-family:var(--font-mono)">RENDIMIENTO TEMPORADA</div>
+      ${rendBar}
+      <hr class="contractor-divider">
+      <div class="contractor-labores">${c.predios.join(' · ')}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderKanban() {
+  const wrap = document.getElementById('kanban-wrap');
+  wrap.innerHTML = Object.entries(etapas).map(([etapa, predios]) => {
+    const color = etapaColors[etapa] || 'var(--text3)';
+    const cards = predios.map(p => {
+      const proj = proyectos.find(x => x.predio === p || p.startsWith(x.predio.slice(0,6)));
+      return `<div class="kanban-card" onclick="showToast('${p} — ${etapa}')">
+        <div class="kanban-predio">${p}</div>
+        <div class="kanban-prop">${proj ? proj.propietario : ''}</div>
+        <div class="kanban-zone">${proj ? proj.zona : ''} · ${proj ? proj.especie : ''}</div>
+      </div>`;
+    }).join('');
+    return `<div class="kanban-col">
+      <div class="kanban-header" style="color:${color}">
+        ${etapa}
+        <span class="kanban-count">${predios.length}</span>
+      </div>
+      <div class="kanban-cards">${cards}</div>
+    </div>`;
+  }).join('');
+}
+
+function populateSelect() {
+  const sel = document.getElementById('rep-predio');
+  proyectos.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.predio;
+    opt.textContent = p.predio;
+    sel.appendChild(opt);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════
+const titles = {
+  dashboard: ['Dashboard General', 'Temporada 2026 · 31 predios activos'],
+  proyectos: ['Proyectos 2026', '31 predios · 1.726 ha contratadas'],
+  operativo: ['Programa Operativo', 'Estado de labores por predio'],
+  gantt: ['Carta Gantt', 'Planificación de labores Ene–Dic 2026'],
+  contratistas: ['Contratistas / EMSEFOR', '6 contratistas registrados'],
+  comercial: ['Pipeline Comercial', 'Etapas del ciclo de negocio'],
+  avance: ['Reportar Avance', 'Registro semanal de ejecución'],
+};
+
+function navigate(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  document.querySelector(`.nav-item[onclick="navigate('${view}')"]`).classList.add('active');
+  const [title, meta] = titles[view];
+  document.getElementById('topbar-title').textContent = title;
+  document.getElementById('topbar-meta').textContent = meta;
+}
+
+function setTab(el, _) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function filterTable(q) {
+  const rows = document.querySelectorAll('#proyectos-body tr');
+  const lq = q.toLowerCase();
+  rows.forEach(r => {
+    r.style.display = r.textContent.toLowerCase().includes(lq) ? '' : 'none';
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════════════════════════
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+function saveModal(id) {
+  closeModal(id);
+  showToast('✓ Guardado correctamente');
+}
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if(e.target === m) m.classList.remove('open'); });
+});
+
+// ══════════════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ══════════════════════════════════════════════════════════════
+// FORM ACTIONS
+// ══════════════════════════════════════════════════════════════
+function submitAvance() {
+  const predio = document.getElementById('rep-predio').value;
+  const labor  = document.getElementById('rep-labor').value;
+  const ha     = document.getElementById('rep-ha').value;
+  const pct    = document.getElementById('rep-pct').value;
+  const contr  = document.getElementById('rep-contratista').value;
+  const obs    = document.getElementById('rep-obs').value;
+  const fecha  = document.getElementById('rep-fecha').value;
+  if (!predio || !ha) { showToast('⚠ Completa predio y Ha ejecutadas'); return; }
+  const tbody = document.getElementById('historial-body');
+  const d = fecha ? new Date(fecha) : new Date();
+  const fStr = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+  const pctVal = pct ? parseInt(pct) : 0;
+  const pctColor = pctVal >= 80 ? 'var(--green)' : pctVal >= 40 ? 'var(--amber)' : 'var(--red)';
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td class="cell-mono">${fStr}</td>
+    <td class="cell-primary">${predio}</td>
+    <td>${labor}</td>
+    <td class="cell-mono">${ha} ha</td>
+    <td><div class="prog-wrap"><div class="prog-track"><div class="prog-fill" style="width:${pctVal}%;background:${pctColor}"></div></div><span class="prog-label">${pctVal}%</span></div></td>
+    <td>${contr}</td>
+    <td style="color:var(--text3);font-size:11px">${obs || '—'}</td>`;
+  tbody.insertBefore(row, tbody.firstChild);
+  clearForm();
+  showToast(`✓ Avance registrado — ${predio}`);
+}
+
+function clearForm() {
+  ['rep-predio','rep-labor','rep-ha','rep-pct','rep-obs','rep-fecha','rep-contratista'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = el.tagName === 'SELECT' ? el.options[0].value : '';
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+renderProyectos(proyectos);
+renderOperativo();
+renderGantt();
+renderContratistas();
+renderKanban();
+populateSelect();
+document.getElementById('rep-fecha').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
